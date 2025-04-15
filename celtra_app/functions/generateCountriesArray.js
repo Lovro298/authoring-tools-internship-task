@@ -1,4 +1,4 @@
-// A short script that makes an array that contains all countries
+// A short script that makes an array that contains all countries (AI generated)
 
 const fs = require('fs');
 const path = require('path');
