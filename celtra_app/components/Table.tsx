@@ -52,31 +52,36 @@ const Table: React.FC<TableProps> = ({randomCities, userLocation, setUserLocatio
             </div>
             <p></p>
 
-            <div className="rounded-lg w-11/12 overflow-hidden border border-gray-600 mb-12 shadow-lg h-[600px]">
+            <div className="rounded-lg sm:w-11/12 w-full overflow-hidden border border-gray-600 mb-12 shadow-lg h-[600px]">
                 <table className="table-auto w-full">
                     <thead className="bg-gray-100 block w-full">
                     <tr className="w-full flex">
-                        <th className="text-start p-2 border-b-1 w-1/6">City name</th>
-                        <th className="text-start p-2 border-b-1 w-1/6">Country name</th>
-                        <th className="text-start p-2 border-b-1 w-1/6">Country code</th>
-                        <th className="text-start p-2 border-b-1 w-1/6">Coordinates</th>
-                        <th className="text-start p-2 border-b-1 w-1/6">Distance</th>
-                        <th className="text-start p-2 border-b-1 w-1/6">Distance AI</th>
+                        <th className="sm:text-base text-xs text-start py-2 sm:p-2 border-b-1 w-1/6 max-[400px]:w-1/2">City name</th>
+                        <th className="sm:text-base text-xs text-start py-2 sm:p-2 border-b-1 w-1/6 max-[400px]:hidden">Country name</th>
+                        <th className="sm:text-base text-xs text-start py-2 sm:p-2 border-b-1 w-1/6 max-[400px]:hidden">Country code</th>
+                        <th className="sm:text-base text-xs text-start py-2 sm:p-2 border-b-1 w-1/6 max-[400px]:hidden">Coords</th>
+                        <th className="sm:text-base text-xs text-start py-2 sm:p-2 border-b-1 w-1/6 max-[400px]:w-1/2">Distance</th>
+                        <th className="sm:text-base text-xs text-start py-2 sm:p-2 border-b-1 w-1/6 max-[400px]:hidden">Distance AI</th>
                     </tr>
                     </thead>
 
                     <tbody className="block overflow-y-scroll h-[550px] w-full">
                     {randomCities.map((city, index) => (
                         <tr key={index} className="flex w-full">
-                        <td className="p-2 border-b border-gray-300 w-1/6 cursor-pointer hover:bg-blue-500 hover:text-white" onClick={() => onCityPress(city.lat, city.lng)}>{city.name}</td>
-                        <td className="p-2 border-b border-gray-300 w-1/6">{city.country_name}</td>
-                        <td className="p-2 border-b border-gray-300 w-1/6">{city.country}</td>
-                        <td className="p-2 border-b border-gray-300 w-1/6">
-                            <p>lat: {city.lat}</p>
-                            <p>lng: {city.lng}</p>
-                        </td>
-                        <td className="p-2 border-b border-gray-300 w-1/6">{distances[index]} km</td>
-                        <td className="p-2 border-b border-gray-300 w-1/6">{distancesAI[index]} km</td>
+                            <td 
+                                className="sm:text-base text-xs py-2 sm:p-2 border-b border-gray-300 w-1/6 max-[400px]:w-1/2 cursor-pointer hover:bg-blue-500 hover:text-white"
+                                onClick={() => onCityPress(city.lat, city.lng)}
+                            >
+                                {city.name} 
+                            </td>
+                            <td className="sm:text-base text-xs py-2 sm:p-2 border-b border-gray-300 w-1/6 max-[400px]:hidden">{city.country_name}</td>
+                            <td className="sm:text-base text-xs py-2 sm:p-2 border-b border-gray-300 w-1/6 max-[400px]:hidden">{city.country}</td>
+                            <td className="sm:text-base text-xs py-2 sm:p-2 border-b border-gray-300 w-1/6 max-[400px]:hidden">
+                                <p>{city.lat}</p>
+                                <p>{city.lng}</p>
+                            </td>
+                            <td className="sm:text-base text-xs py-2 sm:p-2 border-b border-gray-300 w-1/6 max-[400px]:w-1/2">{distances[index]} km</td>
+                            <td className="sm:text-base text-xs py-2 sm:p-2 border-b border-gray-300 w-1/6 max-[400px]:hidden">{distancesAI[index]} km</td>
                         </tr>
                     ))}
                     </tbody>
