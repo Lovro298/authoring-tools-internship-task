@@ -1,40 +1,15 @@
 import { City } from "@/types/City"
 import { UserLocation } from "@/types/UserLocation"
-import myHaversineDistance from "@/functions/myHaversineDistance";
-import AIHaversineDistance from "@/functions/AIHaversineDistance";
-import { useEffect, useState } from "react";
 
 interface TableProps {
     randomCities: City[];
-    userLocation: UserLocation | undefined
+    userLocation: UserLocation;
     setUserLocation: React.Dispatch<React.SetStateAction<UserLocation | undefined>>
+    distances: number[],
+    distancesAI: number[]
 }
 
-const Table: React.FC<TableProps> = ({randomCities, userLocation, setUserLocation}) => {
-
-    const [distances, setDistances] = useState<number[]>([]);
-    const [distancesAI, setDistancesAI] = useState<number[]>([]);
-
-    useEffect(() => {
-        const distanceArray: number[] = [];
-        const distanceAIArray: number[] = [];
-        for(const city of randomCities) {
-            const lat1 = city.lat;
-            const lng1 = city.lng;
-            const lat2 = userLocation?.lat;
-            const lng2 = userLocation?.lng;
-            const myDistance = myHaversineDistance(lat1, lat2!, lng1, lng2!);
-            const AIDistance = AIHaversineDistance(lat1, lng1, lat2!, lng2!);
-            
-            distanceArray.push(myDistance);
-            distanceAIArray.push(AIDistance);
-        }
-
-        setDistances(distanceArray);
-        setDistancesAI(distanceAIArray);
-
-
-    }, [userLocation, randomCities])
+const Table: React.FC<TableProps> = ({randomCities, userLocation, setUserLocation, distances, distancesAI}) => {
 
     const onCityPress = (lat:number, lng:number) => {
         setUserLocation({
@@ -45,12 +20,6 @@ const Table: React.FC<TableProps> = ({randomCities, userLocation, setUserLocatio
 
     return (
         <section className="w-full flex flex-col items-center justify-center">
-            <div className="my-8">
-                <h3 className="font-bold">Your coordinates:</h3>
-                <p className="mt-2">lat: {userLocation?.lat}</p>
-                <p>lng: {userLocation?.lng}</p>
-            </div>
-            <p></p>
 
             <div className="rounded-lg sm:w-11/12 w-full overflow-hidden border border-gray-600 mb-12 shadow-lg h-[600px]">
                 <table className="table-auto w-full">
@@ -67,7 +36,7 @@ const Table: React.FC<TableProps> = ({randomCities, userLocation, setUserLocatio
 
                     <tbody className="block overflow-y-scroll h-[550px] w-full">
                     {randomCities.map((city, index) => (
-                        <tr key={index} className="flex w-full">
+                        <tr key={index} className={`flex w-full ${userLocation?.lat === city.lat && userLocation?.lng === city.lng ? "bg-gray-200 font-bold text-gray-600" : ""}`}>
                             <td 
                                 className="sm:text-base text-xs py-2 sm:p-2 border-b border-gray-300 w-1/6 max-[400px]:w-1/2 cursor-pointer hover:bg-blue-500 hover:text-white"
                                 onClick={() => onCityPress(city.lat, city.lng)}
