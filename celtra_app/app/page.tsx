@@ -6,6 +6,13 @@ import { UserLocation } from "@/types/UserLocation"
 import countries from "../functions/countries"
 import Table from "@/components/Table"
 
+import dynamic from 'next/dynamic';
+
+// remove serverside rendering for MapView
+const Map = dynamic(() => import('@/components/Map'), {
+  ssr: false,
+});
+
 const Page = () => {
 
   const [randomCities, setRandomCities] = useState<City[]>([]);
@@ -74,11 +81,17 @@ const Page = () => {
     <main>
       {
         randomCities.length === 25 && userLocation &&
-        <Table
-          randomCities={randomCities}
-          userLocation={userLocation}
-          setUserLocation={setUserLocation}
-        />
+        <>
+          <Table
+            randomCities={randomCities}
+            userLocation={userLocation}
+            setUserLocation={setUserLocation}
+          />
+          <Map
+            randomCities={randomCities}
+            userLocation={userLocation}
+          />
+        </>
       }
     </main>
   )
