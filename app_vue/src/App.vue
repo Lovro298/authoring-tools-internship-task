@@ -2,8 +2,9 @@
 import { onMounted, ref } from 'vue'
 import { useUserLocationStore } from '@/stores/userLocation'
 import { useCitiesStore } from '@/stores/cities'
-import countries from '@/functions/countries.js'
+import countries from './functions/countries.ts'
 import CityTable from '@/components/CityTable.vue'
+import CityMap from '@/components/CityMap.vue'
 
 const locationStore = useUserLocationStore()
 const citiesStore = useCitiesStore()
@@ -47,7 +48,10 @@ onMounted(() => {
         <p>{{ locationStore.currentCoordinates.lng }}</p>
     </section>
     <div v-if="loading">Loading cities ...</div>
-    <CityTable v-else />
+    <div v-else>
+        <CityTable />
+        <CityMap />
+    </div>
 </template>
 
 <style scoped>

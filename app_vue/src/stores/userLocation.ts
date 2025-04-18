@@ -1,26 +1,26 @@
-import { reactive } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { UserLocation } from '@/types/types'
 
 export const useUserLocationStore = defineStore('userLocation', () => {
-    const initialCoordinates: UserLocation = reactive({
+    const initialCoordinates = ref<UserLocation>({
         lat: undefined,
         lng: undefined,
     })
 
-    const currentCoordinates: UserLocation = reactive({
+    const currentCoordinates = ref<UserLocation>({
         lat: undefined,
         lng: undefined,
     })
 
     const setInitialCoordinates = (lat: number, lng: number) => {
-        initialCoordinates.lat = lat
-        initialCoordinates.lng = lng
+        initialCoordinates.value.lat = lat
+        initialCoordinates.value.lng = lng
     }
 
     const setCurrentCoordinates = (lat: number, lng: number) => {
-        currentCoordinates.lat = lat
-        currentCoordinates.lng = lng
+        currentCoordinates.value.lat = lat
+        currentCoordinates.value.lng = lng
     }
 
     return { initialCoordinates, currentCoordinates, setInitialCoordinates, setCurrentCoordinates }

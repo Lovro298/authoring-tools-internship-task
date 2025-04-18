@@ -1,4 +1,4 @@
-const countries = [
+const countries: string[] = [
     'AD',
     'AE',
     'AF',
