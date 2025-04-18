@@ -36,9 +36,21 @@ const updateMarkers = (map: L.Map) => {
 
     cityMarkers = []
     cityStore.randomCities.forEach((city, index) => {
-        const marker = L.marker([city.lat, city.lng], { icon: blueMarker })
-            .addTo(map)
-            .bindPopup(`${city.name}, distance: ${distancesStore.myDistances[index]} km`)
+        const marker = L.marker([city.lat, city.lng], { icon: blueMarker }).addTo(map).bindPopup(`
+                <p>${city.name}</p>
+                <p>distance: ${distancesStore.myDistances[index]} km</p>
+                <button class='button' data-lat=${city.lat} data-lng=${city.lng}>Select this location</button>
+                `)
+
+        marker.on('popupopen', () => {
+            const button = document.querySelector('.button') as HTMLButtonElement
+
+            button.onclick = () => {
+                const lat = parseFloat(button.dataset.lat!)
+                const lng = parseFloat(button.dataset.lng!)
+                userLocationStore.setCurrentCoordinates(lat, lng)
+            }
+        })
 
         cityMarkers.push(marker)
     })
@@ -48,7 +60,11 @@ const updateMarkers = (map: L.Map) => {
         { icon: redMarker },
     )
         .addTo(map)
-        .bindPopup('Your selected location')
+        .bindPopup(
+            `
+            <p>Your selected location</p>
+        `,
+        )
         .openPopup()
 }
 
@@ -65,7 +81,13 @@ onMounted(() => {
 watch(
     () => [distancesStore.myDistances, userLocationStore.currentCoordinates],
     () => {
-        if (map) updateMarkers(map)
+        if (map) {
+            updateMarkers(map)
+            distancesStore.updateDistances(
+                userLocationStore.currentCoordinates,
+                cityStore.randomCities,
+            )
+        }
     },
     { deep: true },
 )
@@ -84,7 +106,7 @@ watch(
     width: full;
     display: flex;
     justify-content: center;
-    height: 800px;
+    height: 600px;
     margin-top: 4rem;
 }
 
@@ -93,8 +115,22 @@ watch(
     border-radius: 1rem;
     overflow: hidden;
 }
+
+.button {
+    background-color: rgb(0, 106, 255);
+    border: none;
+    padding: 4px 8px;
+    border-radius: 1rem;
+    color: white;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: rgb(85, 156, 255);
+}
+
 #map {
     width: 100%;
-    height: 800px;
+    height: 600px;
 }
 </style>

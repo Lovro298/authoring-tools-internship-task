@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, watch, ref } from 'vue'
 import { useCitiesStore } from '@/stores/cities'
 import { useDistancesStore } from '@/stores/distances'
 import { useUserLocationStore } from '@/stores/userLocation'
@@ -11,15 +11,32 @@ const distancesStore = useDistancesStore()
 const userLocationStore = useUserLocationStore()
 
 const randomCities: City[] = citiesStore.randomCities
-const currentCoordinates: UserLocation = userLocationStore.currentCoordinates
+let currentCoordinates: UserLocation = userLocationStore.currentCoordinates
+
+const myDistances = ref<number[]>(distancesStore.myDistances)
+const aiDistances = ref<number[]>(distancesStore.aiDistances)
 
 const changeLocation = (lat: number, lng: number) => {
     userLocationStore.setCurrentCoordinates(lat, lng)
     distancesStore.updateDistances(userLocationStore.currentCoordinates, randomCities)
 }
 
+watch(
+    () => [
+        distancesStore.myDistances,
+        distancesStore.aiDistances,
+        userLocationStore.currentCoordinates,
+    ],
+    () => {
+        myDistances.value = distancesStore.myDistances
+        aiDistances.value = distancesStore.aiDistances
+    },
+)
+
 onMounted(() => {
     distancesStore.updateDistances(currentCoordinates, randomCities)
+    myDistances.value = distancesStore.myDistances
+    aiDistances.value = distancesStore.aiDistances
 })
 </script>
 
@@ -39,7 +56,11 @@ onMounted(() => {
                 </thead>
 
                 <tbody class="table-body">
-                    <tr v-for="(city, index) in randomCities" :key="index" class="table-row">
+                    <tr
+                        v-for="(city, index) in randomCities"
+                        :key="index"
+                        :class="`table-row ${city.lat === currentCoordinates.lat && city.lng === currentCoordinates.lng ? 'table-row-colored' : ''}`"
+                    >
                         <td class="table-cell city" @click="changeLocation(city.lat, city.lng)">
                             {{ city.name }}
                         </td>
@@ -49,8 +70,8 @@ onMounted(() => {
                             <p>{{ city.lat }}</p>
                             <p>{{ city.lng }}</p>
                         </td>
-                        <td class="table-cell">{{ distancesStore.myDistances[index] }}</td>
-                        <td class="table-cell">{{ distancesStore.aiDistances[index] }}</td>
+                        <td class="table-cell">{{ myDistances[index] }} km</td>
+                        <td class="table-cell">{{ aiDistances[index] }} km</td>
                     </tr>
                 </tbody>
             </table>
@@ -106,5 +127,9 @@ onMounted(() => {
 .city:hover {
     background-color: rgb(0, 106, 255);
     color: white;
+}
+
+.table-row-colored {
+    background-color: rgb(233, 233, 233);
 }
 </style>

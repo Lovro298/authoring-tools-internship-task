@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 import { useUserLocationStore } from '@/stores/userLocation'
 import { useCitiesStore } from '@/stores/cities'
 import countries from './functions/countries.ts'
+import SelectedCoordinates from './components/SelectedCoordinates.vue'
 import CityTable from '@/components/CityTable.vue'
 import CityMap from '@/components/CityMap.vue'
 
@@ -42,30 +43,10 @@ onMounted(() => {
 </script>
 
 <template>
-    <section id="user_coords">
-        <h3>Your coordinates</h3>
-        <p>{{ locationStore.currentCoordinates.lat }}</p>
-        <p>{{ locationStore.currentCoordinates.lng }}</p>
-    </section>
     <div v-if="loading">Loading cities ...</div>
     <div v-else>
+        <SelectedCoordinates :currentLocation="locationStore.currentCoordinates" />
         <CityTable />
         <CityMap />
     </div>
 </template>
-
-<style scoped>
-#user_coords {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 16px;
-    margin-top: 2rem;
-    width: full;
-}
-
-p {
-    font-weight: 200;
-    margin-top: 0;
-}
-</style>
