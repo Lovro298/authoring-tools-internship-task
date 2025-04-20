@@ -14,13 +14,11 @@ export const useUserLocationStore = defineStore('userLocation', () => {
     })
 
     const setInitialCoordinates = (lat: number, lng: number) => {
-        initialCoordinates.value.lat = lat
-        initialCoordinates.value.lng = lng
+        initialCoordinates.value = { lat, lng }
     }
 
     const setCurrentCoordinates = (lat: number, lng: number) => {
-        currentCoordinates.value.lat = lat
-        currentCoordinates.value.lng = lng
+        currentCoordinates.value = { lat, lng }
     }
 
     return { initialCoordinates, currentCoordinates, setInitialCoordinates, setCurrentCoordinates }

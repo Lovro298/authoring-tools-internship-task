@@ -1,46 +1,45 @@
 <script setup lang="ts">
-import { onMounted, watch, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useCitiesStore } from '@/stores/cities'
 import { useDistancesStore } from '@/stores/distances'
 import { useUserLocationStore } from '@/stores/userLocation'
-import type { UserLocation } from '@/types/types'
-import type { City } from '@/types/types'
 
 const citiesStore = useCitiesStore()
 const distancesStore = useDistancesStore()
 const userLocationStore = useUserLocationStore()
 
-const randomCities: City[] = citiesStore.randomCities
-let currentCoordinates: UserLocation = userLocationStore.currentCoordinates
-
-const myDistances = ref<number[]>(distancesStore.myDistances)
-const aiDistances = ref<number[]>(distancesStore.aiDistances)
+const temperatureValue = ref<number>(20);
+const useFilter = ref<boolean>(false);
 
 const changeLocation = (lat: number, lng: number) => {
     userLocationStore.setCurrentCoordinates(lat, lng)
-    distancesStore.updateDistances(userLocationStore.currentCoordinates, randomCities)
+    distancesStore.updateDistances(userLocationStore.currentCoordinates, citiesStore.randomCities)
 }
 
-watch(
-    () => [
-        distancesStore.myDistances,
-        distancesStore.aiDistances,
-        userLocationStore.currentCoordinates,
-    ],
-    () => {
-        myDistances.value = distancesStore.myDistances
-        aiDistances.value = distancesStore.aiDistances
-    },
-)
+const toggleUseFilter = () => {
+    useFilter.value = !useFilter.value;
+}
 
 onMounted(() => {
-    distancesStore.updateDistances(currentCoordinates, randomCities)
-    myDistances.value = distancesStore.myDistances
-    aiDistances.value = distancesStore.aiDistances
+    distancesStore.updateDistances(userLocationStore.currentCoordinates, citiesStore.randomCities)
 })
 </script>
 
 <template>
+    <section class="form-container">
+        <form @submit.prevent="toggleUseFilter">
+            <label for="temperature-slider">Select temperature: {{ temperatureValue }}°C</label>
+            <input
+                type="range"
+                id="temperature-slider"
+                min="-50"
+                max="50"
+                step="1"
+                v-model="temperatureValue"
+            />
+            <button type="submit">{{ useFilter ? 'Disable filter' : 'Enable filter'}}</button>
+        </form>
+    </section>
     <section class="table-container">
         <div class="table-wrapper">
             <table class="city-table">
@@ -50,16 +49,17 @@ onMounted(() => {
                         <th class="table-header hide-small">Country name</th>
                         <th class="table-header hide-small">Country code</th>
                         <th class="table-header hide-small">Coords</th>
-                        <th class="table-header hide-small">Distance</th>
+                        <th class="table-header hide-small">Temperature</th>
+                        <th class="table-header">Distance</th>
                         <th class="table-header hide-small">Distance AI</th>
                     </tr>
                 </thead>
 
                 <tbody class="table-body">
                     <tr
-                        v-for="(city, index) in randomCities"
+                        v-for="(city, index) in citiesStore.randomCities"
                         :key="index"
-                        :class="`table-row ${city.lat === currentCoordinates.lat && city.lng === currentCoordinates.lng ? 'table-row-colored' : ''}`"
+                        :class="`table-row ${distancesStore.myDistances[index] === 0 ? 'table-row-colored' : ''} ${useFilter ? city.weather >= temperatureValue ? '' : 'table-row-hidden' : ''}`"
                     >
                         <td class="table-cell city" @click="changeLocation(city.lat, city.lng)">
                             {{ city.name }}
@@ -70,8 +70,9 @@ onMounted(() => {
                             <p>{{ city.lat }}</p>
                             <p>{{ city.lng }}</p>
                         </td>
-                        <td class="table-cell">{{ myDistances[index] }} km</td>
-                        <td class="table-cell">{{ aiDistances[index] }} km</td>
+                        <td class="table-cell hide-small">{{ city.weather }} °C</td>
+                        <td class="table-cell">{{ distancesStore.myDistances[index] }} km</td>
+                        <td class="table-cell hide-small">{{ distancesStore.aiDistances[index] }} km</td>
                     </tr>
                 </tbody>
             </table>
@@ -80,6 +81,21 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.form-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 4rem 0 4rem 0;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    width: 25%;
+}
+
 .table-container {
     width: full;
     display: flex;
@@ -117,7 +133,7 @@ onMounted(() => {
 }
 
 .table-cell {
-    width: 16.67%;
+    width: 14.3%;
     text-align: center;
 }
 
@@ -131,5 +147,25 @@ onMounted(() => {
 
 .table-row-colored {
     background-color: rgb(233, 233, 233);
+}
+
+.table-row-hidden {
+    display: none;
+}
+
+@media only screen and (max-width: 780px) {
+    .city-table {
+        font-size: 10px;
+    }
+
+    .table-wrapper {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 540px) {
+    .hide-small {
+        display: none;
+    }
 }
 </style>

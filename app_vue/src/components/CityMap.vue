@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, watch } from 'vue'
+import { onMounted, watch, ref } from 'vue'
 import { useCitiesStore } from '@/stores/cities'
 import { useUserLocationStore } from '@/stores/userLocation'
 import { useDistancesStore } from '@/stores/distances'
@@ -79,14 +79,14 @@ onMounted(() => {
 })
 
 watch(
-    () => [distancesStore.myDistances, userLocationStore.currentCoordinates],
+    () => userLocationStore.currentCoordinates,
     () => {
         if (map) {
-            updateMarkers(map)
             distancesStore.updateDistances(
                 userLocationStore.currentCoordinates,
                 cityStore.randomCities,
             )
+            updateMarkers(map)
         }
     },
     { deep: true },
@@ -132,5 +132,11 @@ watch(
 #map {
     width: 100%;
     height: 600px;
+}
+
+@media only screen and (max-width: 780px) {
+    .map-wrapper {
+    width: 100%;
+    }
 }
 </style>

@@ -56,4 +56,10 @@ p {
     font-weight: 200;
     margin-top: 0;
 }
+
+@media only screen and (max-width: 420px){
+    .user-coords {
+        font-size: 12px;
+}
+}
 </style>

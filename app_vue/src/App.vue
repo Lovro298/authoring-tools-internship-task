@@ -22,7 +22,7 @@ const error = () => {
 }
 
 // get user location
-onMounted(() => {
+onMounted(async () => {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(success, error)
 
@@ -38,6 +38,7 @@ onMounted(() => {
         citiesStore.fetchRandomCities(randomCountries).finally(() => {
             loading.value = false
         })
+
     }
 })
 </script>
