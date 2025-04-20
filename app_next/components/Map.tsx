@@ -24,8 +24,6 @@ interface MapProps {
     distances: number[];
 }
 
-// ADD distance array (need to add it to page instead of table)
-
 const Map: React.FC<MapProps> = ({randomCities, userLocation, setUserLocation, distances}) => {
 
     const handlePress = (lat:number, lng:number) => {

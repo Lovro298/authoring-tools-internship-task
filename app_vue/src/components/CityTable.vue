@@ -1,45 +1,41 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { useCitiesStore } from '@/stores/cities'
-import { useDistancesStore } from '@/stores/distances'
-import { useUserLocationStore } from '@/stores/userLocation'
+    import { onMounted, ref } from 'vue'
+    import { useCitiesStore } from '@/stores/cities'
+    import { useDistancesStore } from '@/stores/distances'
+    import { useUserLocationStore } from '@/stores/userLocation'
+    import TemperatureFilter from './TemperatureFilter.vue'
 
-const citiesStore = useCitiesStore()
-const distancesStore = useDistancesStore()
-const userLocationStore = useUserLocationStore()
+    // stores
+    const citiesStore = useCitiesStore()
+    const distancesStore = useDistancesStore()
+    const userLocationStore = useUserLocationStore()
 
-const temperatureValue = ref<number>(20);
-const useFilter = ref<boolean>(false);
+    const temperatureValue = ref<number>(20); // value that is used for table filtering (passed to TemperatureFilter component)
+    const useFilter = ref<boolean>(false); // value that tracks if you want to use filter 
 
-const changeLocation = (lat: number, lng: number) => {
-    userLocationStore.setCurrentCoordinates(lat, lng)
-    distancesStore.updateDistances(userLocationStore.currentCoordinates, citiesStore.randomCities)
-}
+    // if table cell is clicked in first column of table, change current coordinates to the coordinates that corespond to that cell
+    const changeLocation = (lat: number, lng: number): void => {
+        userLocationStore.setCurrentCoordinates(lat, lng)
+        distancesStore.updateDistances(userLocationStore.currentCoordinates, citiesStore.randomCities)
+    }
 
-const toggleUseFilter = () => {
-    useFilter.value = !useFilter.value;
-}
+    // temperature filter ON/OF
+    const toggleUseFilter = (): void => {
+        useFilter.value = !useFilter.value;
+    }
 
-onMounted(() => {
-    distancesStore.updateDistances(userLocationStore.currentCoordinates, citiesStore.randomCities)
-})
+    // update (calculate) distances when the component is mounted 
+    onMounted(() => {
+        distancesStore.updateDistances(userLocationStore.currentCoordinates, citiesStore.randomCities)
+    })
 </script>
 
 <template>
-    <section class="form-container">
-        <form @submit.prevent="toggleUseFilter">
-            <label for="temperature-slider">Select temperature: {{ temperatureValue }}°C</label>
-            <input
-                type="range"
-                id="temperature-slider"
-                min="-50"
-                max="50"
-                step="1"
-                v-model="temperatureValue"
-            />
-            <button type="submit">{{ useFilter ? 'Disable filter' : 'Enable filter'}}</button>
-        </form>
-    </section>
+    <TemperatureFilter
+        :useFilter="useFilter"
+        :toggleUseFilter="toggleUseFilter"
+        v-model:temperatureValue="temperatureValue"
+    />
     <section class="table-container">
         <div class="table-wrapper">
             <table class="city-table">

@@ -1,3 +1,5 @@
+// array of countries to help find 25 random ones
+
 const countries: string[] = [
     'AD',
     'AE',

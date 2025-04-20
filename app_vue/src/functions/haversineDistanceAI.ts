@@ -1,3 +1,5 @@
+// AI implementation of distance (Haversine) function
+
 const AIHaversineDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
     const toRad = (deg: number): number => (deg * Math.PI) / 180
 

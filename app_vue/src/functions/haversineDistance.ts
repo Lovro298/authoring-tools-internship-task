@@ -1,3 +1,5 @@
+// my implementation of distance (Haversine) function 
+
 const myHaversineDistance = (lat1: number, lat2: number, lng1: number, lng2: number) => {
     const earthRadius: number = 6371 // km
 

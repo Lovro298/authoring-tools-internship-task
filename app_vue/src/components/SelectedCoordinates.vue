@@ -4,12 +4,13 @@ import { useUserLocationStore } from '@/stores/userLocation'
 import type { UserLocation } from '@/types/types'
 
 defineProps<{
-    currentLocation: UserLocation
+    currentLocation: UserLocation // current location -> location from browser or the one selected from table
 }>()
 
-const userLocationStore = useUserLocationStore()
+const userLocationStore = useUserLocationStore() 
 
-const resetLocation = () => {
+// if you click button Reset location, current coordinates will be reset to initial ones (the ones from browser)
+const resetLocation = ():void => {
     userLocationStore.setCurrentCoordinates(
         userLocationStore.initialCoordinates.lat!,
         userLocationStore.initialCoordinates.lng!,
