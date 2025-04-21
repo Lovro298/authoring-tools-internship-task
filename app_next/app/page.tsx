@@ -68,7 +68,7 @@ const Page = () => {
 
         // Replace with Promise.all!!!
         for (const country of randomCountries) {
-          const response = await fetch(`http://localhost:3001/cities?country=${country}`)
+          const response = await fetch(`http://localhost:3002/cities?country=${country}`)
           const cities = await response.json(); 
           
           const randomIndex: number = Math.floor(Math.random() * cities?.length);

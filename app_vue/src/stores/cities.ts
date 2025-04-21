@@ -13,7 +13,7 @@ export const useCitiesStore = defineStore('cities', () => {
         try {
             const fetchedCities = randomCountries.map(async (country) => {
                 // fetch countries from local server
-                const countriesRes = await fetch(`http://localhost:3001/cities?country=${country}`)
+                const countriesRes = await fetch(`http://localhost:3002/cities?country=${country}`)
                 const countriesData = await countriesRes.json()
 
                 // get random city from fetched data (same country)
@@ -36,6 +36,8 @@ export const useCitiesStore = defineStore('cities', () => {
             })
             
             const cities = await Promise.all(fetchedCities)
+
+            console.log(cities)
 
             // set randomCities to fetched cities array
             randomCities.value = cities
